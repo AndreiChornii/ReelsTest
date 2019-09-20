@@ -8,7 +8,7 @@ window.game = window.game || {};
      */
     var Game = function()
     {
-
+        
     };
     var p = Game.prototype;
     p.constructor = Game;
@@ -75,6 +75,7 @@ window.game = window.game || {};
         loader.add("low_spade", "images/lowwin_spade.png");
         loader.add("button_up", "images/buttonstates_idle.png");
         loader.add("button_down", "images/buttonstates_down.png");
+        loader.add("game_point", "images/point.png");
 
         loader.load();
     };
@@ -109,6 +110,32 @@ window.game = window.game || {};
         gameFrame.scale.x = gameFrame.scale.y = 0.9;
         stage.addChild(gameFrame);
 
+        // Create the reel
+        const texture_circle = new PIXI.Texture.from('images/buttonstates_down.png');
+        const texture_pointer = new PIXI.Texture.from('images/arrow_up.png');
+        for(let i=0; i<25; i++){
+            if (i==12) {
+                const point = new PIXI.Sprite(texture_pointer);
+                point.anchor.set(0.5);
+                point.x = (i%5)*40+200;
+                point.y = Math.floor(i/5)*40+300;
+                point.scale.x = point.scale.y = 0.02;
+                stage.addChild(point);
+                let am_of_rotation = 20;
+                for (let index = 0; index < am_of_rotation; index++) {
+                    point.rotation += 0.1;
+                    stage.addChild(point);
+                }
+            } else {
+                const point = new PIXI.Sprite(texture_circle);
+                point.anchor.set(0.5);
+                point.x = (i%5)*40+200;
+                point.y = Math.floor(i/5)*40+300;
+                point.scale.x = point.scale.y = 0.1;
+                stage.addChild(point);
+            }
+        }
+
         // Create the spin button
         var spinButton = new game.SpinButton({
             up: {
@@ -130,6 +157,8 @@ window.game = window.game || {};
         stage.addChild(spinButton);
         this._spinButton = spinButton;
 
+
+
         // Create the Reels
         var reels = new game.Reels([
             PIXI.Texture.from("high_bell"),
@@ -140,7 +169,7 @@ window.game = window.game || {};
             PIXI.Texture.from("low_spade"),
             PIXI.Texture.from("low_diamond"),
             PIXI.Texture.from("low_heart"),
-            PIXI.Texture.from("low_club")
+            PIXI.Texture.from("low_club"),
         ]);
         stage.addChild(reels);
         this._reels = reels;
